@@ -485,7 +485,10 @@
       let isValid = true;
       
       requiredFields.forEach(field => {
-        if (!field.value) {
+        const isCheckbox = field.type === 'checkbox' || field.type === 'radio';
+        const fieldHasValue = isCheckbox ? field.checked : field.value;
+
+        if (!fieldHasValue) {
           isValid = false;
           field.style.borderColor = 'red';
         } else {
@@ -572,7 +575,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Set today's date as default
       const today = new Date();
-      const dateStr = today.toISOString().split('T')[0];
+      // Use local time to avoid timezone issues that can shift the date
+      const dateStr = today.toLocaleDateString('en-CA');
       document.getElementById('date').value = dateStr;
       
       // Improve touch experience
