@@ -485,7 +485,10 @@
       let isValid = true;
       
       requiredFields.forEach(field => {
-        if (!field.value) {
+        const isCheckbox = field.type === 'checkbox' || field.type === 'radio';
+        const fieldHasValue = isCheckbox ? field.checked : field.value;
+
+        if (!fieldHasValue) {
           isValid = false;
           field.style.borderColor = 'red';
         } else {
@@ -556,6 +559,7 @@
         if (response.status === 200) {
           alert('Timesheet submitted successfully!');
           document.getElementById('timesheet-form').reset();
+          setTodayDate();
         } else {
           throw new Error('Email service returned non-200 status');
         }
@@ -568,12 +572,18 @@
       }
     });
 
+    // Helper to set today's date on the form
+    function setTodayDate() {
+      const today = new Date();
+      // Use local time to avoid timezone issues that can shift the date
+      const dateStr = today.toLocaleDateString('en-CA');
+      document.getElementById('date').value = dateStr;
+    }
+
     // Initialize the form when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       // Set today's date as default
-      const today = new Date();
-      const dateStr = today.toISOString().split('T')[0];
-      document.getElementById('date').value = dateStr;
+      setTodayDate();
       
       // Improve touch experience
       document.querySelectorAll('input, select, button').forEach(el => {
