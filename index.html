@@ -558,7 +558,6 @@
         
         if (response.status === 200) {
           alert('Timesheet submitted successfully!');
-          document.getElementById('timesheet-form').reset();
         } else {
           throw new Error('Email service returned non-200 status');
         }
@@ -566,6 +565,14 @@
         console.error('Submission error:', error);
         alert('Failed to submit timesheet. Please try again or contact support if the problem persists.');
       } finally {
+        const form = document.getElementById('timesheet-form');
+        form.reset();
+
+        // Reapply today's date after form reset
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('en-CA');
+        document.getElementById('date').value = dateStr;
+
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
       }
